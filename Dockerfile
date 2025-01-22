@@ -1,10 +1,22 @@
 FROM node:20-slim
 
-# Install dos2unix and create uploads directory with proper permissions
-RUN apt-get update && apt-get install -y dos2unix && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /usr/src/app/uploads && \
-    chmod 777 /usr/src/app/uploads
+# Install required packages including FFmpeg, build essentials, cmake, and curl
+RUN apt-get update && \
+    apt-get install -y \
+    dos2unix \
+    ffmpeg \
+    python3 \
+    python3-pip \
+    build-essential \
+    cmake \
+    git \
+    make \
+    g++ \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /usr/src/app/uploads \
+    && chmod 777 /usr/src/app/uploads
 
 WORKDIR /usr/src/app
 
@@ -13,7 +25,18 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install && \
+    npm install nodejs-whisper
+
+# Manual whisper.cpp setup
+RUN cd node_modules/nodejs-whisper/cpp/whisper.cpp && \
+    # Download the model
+    bash ./models/download-ggml-model.sh tiny.en && \
+    # Build whisper.cpp
+    cmake -B build && \
+    cd build && \
+    make && \
+    cd ../../../..
 
 # Copy source code
 COPY . .
