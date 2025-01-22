@@ -51,3 +51,6 @@ debug.log
 # Temporary files
 tmp/
 temp/ 
+
+# Project specific directories
+instructions/

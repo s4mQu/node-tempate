@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: agent001
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=development
+      - PORT=3030
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
