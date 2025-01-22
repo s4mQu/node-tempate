@@ -54,3 +54,7 @@ temp/
 
 # Project specific directories
 instructions/
+
+# Uploads
+uploads/*
+!uploads/.gitkeep

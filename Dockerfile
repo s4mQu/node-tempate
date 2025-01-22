@@ -1,7 +1,10 @@
 FROM node:20-slim
 
-# Install dos2unix
-RUN apt-get update && apt-get install -y dos2unix && rm -rf /var/lib/apt/lists/*
+# Install dos2unix and create uploads directory with proper permissions
+RUN apt-get update && apt-get install -y dos2unix && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /usr/src/app/uploads && \
+    chmod 777 /usr/src/app/uploads
 
 WORKDIR /usr/src/app
 
@@ -14,6 +17,9 @@ RUN npm install
 
 # Copy source code
 COPY . .
+
+# Ensure uploads directory exists and has proper permissions
+RUN mkdir -p uploads && chmod 777 uploads
 
 # Set up the entrypoint script with proper permissions
 RUN chmod +x scripts/docker-entrypoint.sh && \
