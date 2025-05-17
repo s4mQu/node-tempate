@@ -4,11 +4,13 @@ import path from "path";
 export class TTSService {
   private readonly pythonScriptPath: string;
   private readonly pythonCommand: string;
+  private readonly outputDir: string;
 
   constructor() {
     this.pythonScriptPath = path.join(__dirname, "kokoro-tts", "use-kokoro.py");
     // Try python3 first, fall back to python
     this.pythonCommand = process.platform === "win32" ? "python" : "python3";
+    this.outputDir = path.join(__dirname, "..", "audio", "tts");
   }
 
   async generateSpeech(text: string, voice: string = "bf_emma"): Promise<string> {
@@ -30,7 +32,10 @@ export class TTSService {
         // Look for the generated audio file path in the output
         const match = output.match(/Saved audio to: (.+\.wav)/);
         if (match) {
-          outputPath = match[1];
+          // Convert the Python path to a relative path from the output directory
+          const fullPath = match[1];
+          const fileName = path.basename(fullPath);
+          outputPath = path.join(this.outputDir, fileName);
         }
       });
 

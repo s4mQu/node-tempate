@@ -59,3 +59,5 @@ instructions/
 uploads/*
 !uploads/.gitkeep
 __pycache__/
+*.wav
+*.mp3

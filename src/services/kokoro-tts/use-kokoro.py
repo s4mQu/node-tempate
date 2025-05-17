@@ -4,6 +4,7 @@ import soundfile as sf
 import torch
 import argparse
 import sys
+import os
 
 def main():
     parser = argparse.ArgumentParser(description='Generate speech using Kokoro TTS')
@@ -14,6 +15,10 @@ def main():
     if not args.text:
         print("Error: No text provided", file=sys.stderr)
         sys.exit(1)
+
+    # Create output directory if it doesn't exist
+    output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'audio', 'tts')
+    os.makedirs(output_dir, exist_ok=True)   
 
     # Initialize pipeline
     pipeline = KPipeline(lang_code='a')  # American English
@@ -29,7 +34,7 @@ def main():
 
         # Process each generated audio segment
         for i, (gs, ps, audio) in enumerate(generator):
-            output_path = f'output_{i}.wav'
+            output_path = os.path.join(output_dir, f'output_{i}.wav')
             sf.write(output_path, audio, 24000)
             print(f"Saved audio to: {output_path}")
 
