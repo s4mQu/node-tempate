@@ -58,3 +58,4 @@ instructions/
 # Uploads
 uploads/*
 !uploads/.gitkeep
+__pycache__/

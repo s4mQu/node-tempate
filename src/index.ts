@@ -9,6 +9,8 @@ import { logger } from "./utils/logger";
 import path from "path";
 import fs from "fs";
 
+import { TTSService } from "./services/tts-service";
+
 // Load environment variables
 config();
 
@@ -48,5 +50,14 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });
+
+const ttsService = new TTSService();
+
+const runFunction = async () => {
+  const audioFilePath = await ttsService.generateSpeech("Hello, this is a test");
+  console.log(audioFilePath);
+};
+
+runFunction();
 
 export { app, container };

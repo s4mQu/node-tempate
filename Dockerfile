@@ -1,4 +1,10 @@
-FROM node:20-slim
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+
+# Install Node.js
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 # Install required packages including FFmpeg, build essentials, cmake, and curl
 RUN apt-get update && \
@@ -41,13 +47,21 @@ RUN cd node_modules/nodejs-whisper/cpp/whisper.cpp && \
 # Copy source code
 COPY . .
 
+# Install Python packages
+RUN pip3 install --no-cache-dir \
+    kokoro>=0.9.4 \
+    soundfile \
+    torch \
+    ipython
+
 # Ensure uploads directory exists and has proper permissions
 RUN mkdir -p uploads && chmod 777 uploads
 
-# Set up the entrypoint script with proper permissions
-RUN chmod +x scripts/docker-entrypoint.sh && \
-    dos2unix scripts/docker-entrypoint.sh && \
-    ln -s /usr/src/app/scripts/docker-entrypoint.sh /entrypoint.sh
+# Set up the entrypoint script with proper permissions and line endings
+COPY scripts/docker-entrypoint.sh /usr/src/app/scripts/
+RUN dos2unix /usr/src/app/scripts/docker-entrypoint.sh && \
+    chmod +x /usr/src/app/scripts/docker-entrypoint.sh && \
+    ln -sf /usr/src/app/scripts/docker-entrypoint.sh /entrypoint.sh
 
 EXPOSE 3030
 
