@@ -17,8 +17,8 @@ export class TTSService {
   }
 
   async generateSpeech(text: string, voice: string = "bf_emma"): Promise<string> {
-    const io = getIO();
-    const watcher = watchTTSFolder();
+    const io = getIO(); // this gives us access to the socket.io server instance.
+    const watcher = watchTTSFolder(); // this is used to watch the tts folder for new files.
 
     // when a new file is added. send the wav file to the client:
     watcher.on("add", (filePath) => {
@@ -33,15 +33,9 @@ export class TTSService {
         });
 
         const fileBuffer = fs.readFileSync(filePath);
-        console.log("TTS file read successfully, buffer size:", fileBuffer.length);
-
-        // Log the first few bytes to verify it's a WAV file
-        const header = fileBuffer.slice(0, 12).toString("hex");
-        console.log("File header:", header);
 
         // Send the file
         io.emit("tts-file-added", fileBuffer);
-        console.log("TTS file sent to client, buffer size:", fileBuffer.length);
       } catch (error) {
         console.error("Error reading TTS file:", error);
         if (error instanceof Error) {

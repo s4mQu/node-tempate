@@ -86,8 +86,6 @@ export class AudioService {
       logger.info(`Transcription completed successfully`);
 
       const cleanTranscription = filterWhisperOutput(result);
-      console.log(cleanTranscription);
-      // TODO: Do stuff with it..
       return cleanTranscription;
     } catch (error) {
       logger.error("Error in transcription service:", error);
