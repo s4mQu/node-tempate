@@ -57,15 +57,4 @@ app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });
 
-const ttsService = new TTSService();
-
-const runFunction = async () => {
-  const audioFilePath = await ttsService.generateSpeech(
-    "Hello Stephanie. You have an email. Would you like me to read it to you?"
-  );
-  console.log(audioFilePath);
-};
-
-// runFunction();
-
 export { app, container };
