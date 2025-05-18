@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AudioService } from "../services/audio-service";
 import { logger } from "../utils/logger";
 import { callOllama } from "../services/llm/functions/call-ollama";
+import { TTSService } from "../services/tts-service";
 
 class AudioHandler {
   private audioService: AudioService;
@@ -12,6 +13,8 @@ class AudioHandler {
 
   transcribe = async (req: Request, res: Response): Promise<void> => {
     try {
+      const ttsService = new TTSService();
+
       logger.info("Received audio transcription request");
 
       if (!req.file) {
@@ -32,11 +35,15 @@ class AudioHandler {
 
       const response = await callOllama(transcription);
 
-      console.log(response);
+      const ttsResponse = await ttsService.generateSpeech(response).then((response) => {
+        console.log(response);
+      });
 
       res.status(200).json({
         success: true,
         transcription,
+        response,
+        ttsResponse,
         fileDetails: {
           filename: req.file.filename,
           size: req.file.size,

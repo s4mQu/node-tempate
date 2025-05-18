@@ -1,7 +1,7 @@
 {
   "watch": ["src"],
   "ext": ".ts,.js",
-  "ignore": [],
+  "ignore": ["**/audio/**"],
   "exec": "ts-node ./src/index.ts",
   "legacyWatch": true,
   "polling": true,
