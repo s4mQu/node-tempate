@@ -25,7 +25,13 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(helmet());
 app.use(express.json());
 
@@ -60,6 +66,6 @@ const runFunction = async () => {
   console.log(audioFilePath);
 };
 
-runFunction();
+// runFunction();
 
 export { app, container };
