@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AudioService } from "../services/audio-service";
 import { logger } from "../utils/logger";
+import { callOllama } from "../services/llm/functions/call-ollama";
 
 class AudioHandler {
   private audioService: AudioService;
@@ -28,6 +29,10 @@ class AudioHandler {
       });
 
       const transcription = await this.audioService.transcribeAudio(req.file.path);
+
+      const response = await callOllama(transcription);
+
+      console.log(response);
 
       res.status(200).json({
         success: true,

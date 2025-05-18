@@ -9,8 +9,6 @@ import { logger } from "./utils/logger";
 import path from "path";
 import fs from "fs";
 
-import { TTSService } from "./services/tts-service";
-
 // Load environment variables
 config();
 
