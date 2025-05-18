@@ -31,13 +31,14 @@ class AudioHandler {
         path: req.file.path,
       });
 
+      // takes the audio file and transcribes it
       const transcription = await this.audioService.transcribeAudio(req.file.path);
 
+      // sends the transcription to the llm
       const response = await callOllama(transcription);
 
-      const ttsResponse = await ttsService.generateSpeech(response).then((response) => {
-        console.log(response);
-      });
+      // generates the speech from the response // Sockets are used to send the wav file to the client in here.
+      const ttsResponse = await ttsService.generateSpeech(response);
 
       res.status(200).json({
         success: true,

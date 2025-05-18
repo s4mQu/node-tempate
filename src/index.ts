@@ -9,10 +9,17 @@ import { logger } from "./utils/logger";
 import path from "path";
 import fs from "fs";
 
+import { createServer } from "http";
+import { initializeWebSocket } from "./config/socketIO-config";
+
 // Load environment variables
 config();
 
 const app = express();
+const httpServer = createServer(app);
+
+initializeWebSocket(httpServer);
+
 const container = new Container();
 const port = process.env.PORT || 3030;
 
@@ -27,10 +34,19 @@ app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Range"],
+    exposedHeaders: ["Content-Range", "Accept-Ranges", "Content-Length", "Content-Type"],
   })
 );
-app.use(helmet());
+
+// Configure helmet to allow audio streaming
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
 app.use(express.json());
 
 // Routes
@@ -50,8 +66,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Start server
-app.listen(port, () => {
+httpServer.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });
 

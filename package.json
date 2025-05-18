@@ -16,6 +16,7 @@
     "@anthropic-ai/sdk": "^0.14.1",
     "@langchain/ollama": "^0.2.0",
     "@types/socket.io": "^3.0.2",
+    "chokidar": "^4.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.21.2",
@@ -29,7 +30,7 @@
     "nodemon": "^3.1.10",
     "ollama": "^0.5.15",
     "reflect-metadata": "^0.2.1",
-    "socket.io": "^4.7.4",
+    "socket.io": "^4.8.1",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
