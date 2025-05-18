@@ -30,8 +30,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
+# Install dependencies and nodemon globally
 RUN npm install && \
+    npm install -g nodemon && \
     npm install nodejs-whisper
 
 # Manual whisper.cpp setup

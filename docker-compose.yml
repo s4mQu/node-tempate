@@ -11,6 +11,8 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3030
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

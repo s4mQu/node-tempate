@@ -50,7 +50,9 @@ export class AudioService {
       return cleanTranscription;
     } catch (error) {
       logger.error("Error in transcription service:", error);
-      throw new Error(`Failed to transcribe audio: ${error.message}`);
+      throw new Error(
+        `Failed to transcribe audio: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 }
