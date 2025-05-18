@@ -49,22 +49,6 @@ app.use(
 
 app.use(express.json());
 
-// Serve static files from the audio/tts directory with proper MIME type
-const ttsDir = path.join(__dirname, "audio", "tts");
-app.use(
-  "/audio/tts",
-  (req, res, next) => {
-    // Set proper headers for audio files
-    res.setHeader("Content-Type", "audio/wav");
-    res.setHeader("Accept-Ranges", "bytes");
-    next();
-  },
-  express.static(ttsDir)
-);
-
-// Log the TTS directory path for debugging
-logger.info(`Serving TTS files from: ${ttsDir}`);
-
 // Routes
 app.use("/api/audio", audioRoutes);
 
@@ -82,7 +66,6 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Start server
 httpServer.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });

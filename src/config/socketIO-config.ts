@@ -1,10 +1,16 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
 import { logger } from "../utils/logger";
-import { FileWatcherService } from "../services/file-watcher-service";
+import { watchTTSFolder } from "../utils/tts-folder-listener";
 
 let io: Server;
-let fileWatcher: FileWatcherService;
+
+export const getIO = () => {
+  if (!io) {
+    throw new Error("Socket.IO server not initialized");
+  }
+  return io;
+};
 
 export const initializeWebSocket = (httpServer: HttpServer) => {
   io = new Server(httpServer, {
@@ -14,22 +20,11 @@ export const initializeWebSocket = (httpServer: HttpServer) => {
     },
   });
 
-  // Initialize file watcher service
-  fileWatcher = new FileWatcherService(io);
-
   io.on("connection", (socket) => {
     logger.info(`Client connected: ${socket.id}`);
 
-    // Start watching for new audio files when a client connects
-    fileWatcher.startWatching();
-
     socket.on("disconnect", () => {
       logger.info(`Client disconnected: ${socket.id}`);
-
-      // If no clients are connected, stop watching
-      if (io.engine.clientsCount === 0) {
-        fileWatcher.stopWatching();
-      }
     });
   });
 
