@@ -1,33 +1,17 @@
-import "reflect-metadata";
-import express from "express";
-import { Container } from "inversify";
 import { config } from "dotenv";
-import cors from "cors";
-import helmet from "helmet";
-import audioRoutes from "./routes/audio-routes";
-import { logger } from "./utils/logger";
-import path from "path";
-import fs from "fs";
-
-import { createServer } from "http";
-import { initializeWebSocket } from "./config/socketIO-config";
-
-// Load environment variables
 config();
 
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+
+import { logger } from "./utils/logger";
+
+// Load environment variables
+
 const app = express();
-const httpServer = createServer(app);
 
-initializeWebSocket(httpServer);
-
-const container = new Container();
 const port = process.env.PORT || 3030;
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
 
 // Middleware
 app.use(
@@ -39,7 +23,6 @@ app.use(
   })
 );
 
-// Configure helmet to allow audio streaming
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -49,11 +32,10 @@ app.use(
 
 app.use(express.json());
 
-// Routes
-app.use("/api/audio", audioRoutes);
+// Routes here
 
 // Basic health check endpoint
-app.get("/health", (_, res) => {
+app.get("/health", (res: express.Response) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
@@ -66,8 +48,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-httpServer.listen(port, () => {
+app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });
 
-export { app, container };
+export { app };
