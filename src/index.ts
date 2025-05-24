@@ -8,7 +8,6 @@ import helmet from "helmet";
 import { logger } from "./utils/logger";
 import { testRoute } from "./routes/test-route";
 
-// Load environment variables
 
 const app = express();
 
