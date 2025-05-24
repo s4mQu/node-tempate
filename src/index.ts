@@ -6,6 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 
 import { logger } from "./utils/logger";
+import { testRoute } from "./routes/test-route";
 
 // Load environment variables
 
@@ -32,7 +33,8 @@ app.use(
 
 app.use(express.json());
 
-// Routes here
+// Routes
+app.use("/api/test", testRoute);
 
 // Basic health check endpoint
 app.get("/health", (res: express.Response) => {
